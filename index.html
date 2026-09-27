@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة كونكت 2 - لغة إنجليزية للصف الثاني الابتدائي</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --secondary: #f43f5e;
+            --accent: #8b5cf6;
+            --bg-color: #f8fafc;
+        }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#e2e8f0 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+        .en-text {
+            font-family: 'Nunito', sans-serif;
+            direction: ltr;
+            display: inline-block;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+        .bounce-hover:hover { transform: translateY(-3px); }
+        .tab-active { background-color: var(--primary); color: white; border-color: var(--primary); }
+        
+        .writing-input {
+            background-image: linear-gradient(transparent, transparent 28px, #cbd5e1 28px);
+            background-size: 100% 30px;
+            line-height: 30px !important;
+            border: none;
+            resize: none;
+        }
+        .writing-input:focus { outline: none; }
+        
+        .correct-anim { animation: pulseGreen 0.5s; }
+        .wrong-anim { animation: shakeRed 0.5s; }
+        
+        @keyframes pulseGreen {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+        @keyframes shakeRed {
+            0%, 100% { transform: translateX(0); border-color: #ef4444; }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white glass-card sticky top-0 z-50 border-b-4 border-sky-400">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-sky-100 rounded-full flex items-center justify-center text-sky-500 text-2xl">
+                    <i class="fa-solid fa-school"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-black text-slate-800 tracking-tight">مكتبتي الإنجليزية <span class="text-sky-500">للبطل الصغير</span></h1>
+                    <p class="text-sm font-bold text-slate-500">Connect 2 - المنهج الكامل والمبسط</p>
+                </div>
+            </div>
+            <button onclick="document.getElementById('welcome-modal').classList.remove('hidden')" class="bg-amber-100 text-amber-600 hover:bg-amber-200 px-4 py-2 rounded-xl font-bold transition-colors">
+                <i class="fa-solid fa-circle-info ml-1"></i> تعليمات
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full">
+        
+        <!-- Unit Selector -->
+        <div class="mb-8 overflow-x-auto pb-4">
+            <h2 class="text-xl font-bold text-slate-700 mb-4"><i class="fa-solid fa-layer-group text-sky-500 ml-2"></i>اختر الوحدة:</h2>
+            <div class="flex gap-3 min-w-max" id="unit-selector">
+                <!-- Unit buttons injected by JS -->
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar: Lesson Selector -->
+            <aside class="lg:col-span-1">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sticky top-28" id="lesson-selector">
+                    <!-- Lesson buttons injected by JS -->
+                </div>
+            </aside>
+
+            <!-- Main Content Area: Lesson Display -->
+            <div class="lg:col-span-3 space-y-6">
+                <!-- Title -->
+                <div class="bg-white rounded-2xl shadow-sm border-b-4 border-sky-400 p-6 text-center relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-sky-50 rounded-full -mr-10 -mt-10 opacity-50"></div>
+                    <h2 class="text-3xl font-black text-slate-800 mb-2 en-text" id="display-unit-title">Unit 1</h2>
+                    <h3 class="text-xl font-bold text-sky-600 mb-2" id="display-lesson-title">Lesson 1</h3>
+                </div>
+
+                <!-- Vocabulary Section -->
+                <section class="bg-white rounded-2xl shadow-sm p-6 border border-slate-100">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-4 border-r-4 border-amber-400 pr-3">
+                        <i class="fa-solid fa-book-open text-amber-500 ml-2"></i> الكلمات (إضغط للاستماع)
+                    </h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="vocab-container">
+                        <!-- Vocab injected here -->
+                    </div>
+                </section>
+
+                <!-- Grammar & Sentences Section -->
+                <section class="bg-white rounded-2xl shadow-sm p-6 border border-slate-100" id="grammar-section">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-4 border-r-4 border-rose-400 pr-3">
+                        <i class="fa-solid fa-pen-nib text-rose-500 ml-2"></i> القواعد والجمل
+                    </h3>
+                    <div id="grammar-container" class="space-y-4">
+                        <!-- Grammar injected here -->
+                    </div>
+                </section>
+
+                <!-- Writing Practice Section -->
+                <section class="bg-amber-50 rounded-2xl shadow-sm p-6 border border-amber-200">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-4 border-r-4 border-emerald-400 pr-3">
+                        <i class="fa-solid fa-pencil text-emerald-500 ml-2"></i> تدريب الكتابة
+                    </h3>
+                    <p class="text-slate-600 mb-4 font-semibold">اكتب الكلمات والجمل التي تعلمتها هنا لتتدرب عليها:</p>
+                    <textarea class="w-full h-48 writing-input p-4 text-2xl en-text text-slate-700 bg-transparent" placeholder="Type here..."></textarea>
+                </section>
+
+                <!-- Interactive Quiz Section -->
+                <section class="bg-slate-800 rounded-2xl shadow-lg p-6 md:p-10 text-white relative overflow-hidden" id="quiz-section">
+                    <!-- Decor -->
+                    <i class="fa-solid fa-ranking-star absolute -bottom-4 -left-4 text-9xl text-slate-700 opacity-50"></i>
+                    
+                    <div class="relative z-10">
+                        <h3 class="text-3xl font-black mb-2 text-yellow-400">
+                            <i class="fa-solid fa-gamepad ml-2"></i> اختبر نفسك يا بطل!
+                        </h3>
+                        <p class="text-slate-300 mb-8 font-semibold">حل الـ 5 أسئلة التالية لتثبيت معلومات الدرس.</p>
+
+                        <div id="quiz-container" class="bg-white text-slate-800 rounded-xl p-6 shadow-inner min-h-[300px]">
+                            <!-- Quiz content injected here -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Welcome Modal -->
+    <div id="welcome-modal" class="fixed inset-0 bg-slate-900/80 z-[100] flex items-center justify-center hidden backdrop-blur-sm">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-8 relative mx-4">
+            <button onclick="document.getElementById('welcome-modal').classList.add('hidden')" class="absolute top-4 left-4 text-slate-400 hover:text-rose-500 text-2xl">
+                <i class="fa-solid fa-circle-xmark"></i>
+            </button>
+            <div class="text-center">
+                <div class="w-20 h-20 bg-sky-100 rounded-full flex items-center justify-center text-sky-500 text-4xl mx-auto mb-4">
+                    <i class="fa-solid fa-face-smile-beam"></i>
+                </div>
+                <h2 class="text-2xl font-black text-slate-800 mb-2">أهلاً بك يا بطل في منصتك!</h2>
+                <p class="text-slate-600 mb-6 font-semibold">هنا جمعنا لك كل ما يخص منهج Connect 2 في مكان واحد.</p>
+                <ul class="text-right space-y-3 mb-8 bg-slate-50 p-4 rounded-xl text-slate-700 font-medium">
+                    <li><i class="fa-solid fa-volume-high text-sky-500 ml-2"></i> اضغط على الكلمة الإنجليزية لسماع نطقها.</li>
+                    <li><i class="fa-solid fa-pencil text-emerald-500 ml-2"></i> استخدم دفتر الكتابة لنسخ الجمل بخط يدك.</li>
+                    <li><i class="fa-solid fa-star text-yellow-500 ml-2"></i> في نهاية كل درس، أثبت مهارتك بحل الاختبار!</li>
+                </ul>
+                <button onclick="document.getElementById('welcome-modal').classList.add('hidden')" class="w-full bg-gradient-to-r from-sky-500 to-blue-600 text-white font-bold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all">
+                    هيا نبدأ التعلم!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. The Massive Curriculum Data Object ---
+        // Extracted meticulously from the provided PDF. No information left behind.
+        const curriculumData = {
+            1: {
+                title: "Unit 1: Let's get started",
+                lessons: [
+                    {
+                        title: "Lesson 1",
+                        vocab: [
+                            { en: "desk", ar: "مكتب" }, { en: "chair", ar: "كرسي" },
+                            { en: "hello", ar: "مرحبا - أهلا" }, { en: "teacher", ar: "مدرس" },
+                            { en: "student", ar: "طالب" }, { en: "what...?", ar: "ما - ماذا" },
+                            { en: "name", ar: "إسم" }, { en: "goodbye", ar: "إلى اللقاء" },
+                            { en: "good morning", ar: "صباح الخير" }
+                        ],
+                        grammar: `
+                            <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-4">
+                                <h4 class="font-bold text-blue-800 mb-2 text-lg">التحدث عن النفس والتحيات:</h4>
+                                <ul class="list-disc list-inside space-y-2 en-text text-slate-700 w-full" dir="ltr">
+                                    <li class="cursor-pointer hover:text-blue-600" onclick="speak('Hello, I am Ali.')">Hello, I'm Ali. <span class="text-slate-500 font-cairo text-sm block rtl">مرحبا إسمي علي</span></li>
+                                    <li class="cursor-pointer hover:text-blue-600" onclick="speak('What is your name?')">What's your name? <span class="text-slate-500 font-cairo text-sm block rtl">ما إسمك؟</span></li>
+                                    <li class="cursor-pointer hover:text-blue-600" onclick="speak('Good morning, Ms. Amira.')">Good morning, Ms. Amira. <span class="text-slate-500 font-cairo text-sm block rtl">صباح الخير ميس أميرة</span></li>
+                                    <li class="cursor-pointer hover:text-blue-600" onclick="speak('May I sit down?')">May I sit down? <span class="text-slate-500 font-cairo text-sm block rtl">هل يمكنني الجلوس؟</span></li>
+                                </ul>
+                            </div>
+                            <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100">
+                                <h4 class="font-bold text-emerald-800 mb-2 text-lg">جمل هامة للحفظ:</h4>
+                                <ul class="list-disc list-inside space-y-2 en-text text-slate-700 w-full" dir="ltr">
+                                    <li class="cursor-pointer hover:text-emerald-600" onclick="speak('I sit on a chair.')">I sit on a chair. <span class="text-slate-500 font-cairo text-sm block rtl">أنا أجلس علي الكرسي</span></li>
+                                    <li class="cursor-pointer hover:text-emerald-600" onclick="speak('my teacher is kind.')">My teacher is kind. <span class="text-slate-500 font-cairo text-sm block rtl">مدرسي يكون طيب</span></li>
+                                    <li class="cursor-pointer hover:text-emerald-600" onclick="speak('I say goodbye at the end of the day.')">I say goodbye at the end of the day. <span class="text-slate-500 font-cairo text-sm block rtl">أقول إلى اللقاء في نهاية اليوم</span></li>
+                                </ul>
+                            </div>
+                        `,
+                        quiz: [
+                            { type: "mcq", q: "What is the meaning of 'desk'?", options: ["كرسي", "مكتب", "طالب", "مدرس"], ans: 1 },
+                            { type: "mcq", q: "Choose: I sit on a .....", options: ["hello", "goodbye", "chair", "name"], ans: 2 },
+                            { type: "translate", q: "مدرس", ans: "teacher" },
+                            { type: "reorder", q: "name / What's / your / ?", options: ["What's", "your", "name", "?"], ans: "What's your name ?" },
+                            { type: "mcq", q: "I say ........ at the end of the day.", options: ["hello", "good morning", "goodbye", "what"], ans: 2 }
+                        ]
+                    },
+                    {
+                        title: "Lesson 2",
+                        vocab: [
+                            { en: "cat", ar: "قطة" }, { en: "hat", ar: "قبعة" },
+                            { en: "fan", ar: "مروحة" }, { en: "man", ar: "رجل" },
+                            { en: "map", ar: "خريطة" }, { en: "cap", ar: "كاب" },
+                            { en: "is...", ar: "هو يكون" }, { en: "she is...", ar: "هي تكون" },
+                            { en: "this is...", ar: "هذا يكون" }, { en: "that is...", ar: "ذلك يكون" }
+                        ],
+                        grammar: `
+                            <div class="bg-amber-50 p-4 rounded-xl border border-amber-100 mb-4">
+                                <h4 class="font-bold text-amber-800 mb-2 text-lg">أسماء الإشارة (Grammar):</h4>
+                                <p class="text-slate-700 mb-2"><b>This is</b> : هذا يكون (للمفرد القريب)</p>
+                                <p class="text-slate-700 mb-4"><b>That is</b> : ذلك يكون (للمفرد البعيد)</p>
+                                <ul class="list-disc list-inside space-y-2 en-text text-slate-700 w-full" dir="ltr">
+                                    <li class="cursor-pointer hover:text-amber-600" onclick="speak('This is a desk.')">This is a desk. <span class="text-slate-500 font-cairo text-sm block rtl">هذا يكون مكتب</span></li>
+                                    <li class="cursor-pointer hover:text-amber-600" onclick="speak('He is a teacher.')">He is a teacher. <span class="text-slate-500 font-cairo text-sm block rtl">هو يكون معلم</span></li>
+                                    <li class="cursor-pointer hover:text-amber-600" onclick="speak('what is this?')">What's this? <i class="fa-solid fa-arrow-right mx-2"></i> This is a fan. <span class="text-slate-500 font-cairo text-sm block rtl">ما هذا؟ هذه تكون مروحة</span></li>
+                                    <li class="cursor-pointer hover:text-amber-600" onclick="speak('what is that?')">What's that? <i class="fa-solid fa-arrow-right mx-2"></i> That is a cat. <span class="text-slate-500 font-cairo text-sm block rtl">ما ذلك؟ ذلك يكون قط</span></li>
+                                </ul>
+                            </div>
+                        `,
+                        quiz: [
+                            { type: "mcq", q: "Choose: ......... is a desk. (للقريب)", options: ["This", "That", "She", "He"], ans: 0 },
+                            { type: "mcq", q: "What is the meaning of 'map'?", options: ["رجل", "قبعة", "خريطة", "مروحة"], ans: 2 },
+                            { type: "translate", q: "مروحة", ans: "fan" },
+                            { type: "mcq", q: "What's that? ........ is a cat.", options: ["This", "That", "am", "are"], ans: 1 },
+                            { type: "reorder", q: "a / is / This / desk.", options: ["This", "is", "a", "desk."], ans: "This is a desk." }
+                        ]
+                    },
+                    {
+                        title: "Lesson 3",
+                        vocab: [
+                            { en: "board", ar: "سبورة" }, { en: "pencil case", ar: "مقلمة" },
+                            { en: "window", ar: "شباك" }, { en: "eraser", ar: "أستيكة" },
+                            { en: "door", ar: "باب" }, { en: "bag", ar: "حقيبة" },
+                            { en: "ruler", ar: "مسطرة" }, { en: "friend", ar: "صديق" }
+                        ],
+                        grammar: `
+                            <div class="bg-purple-50 p-4 rounded-xl border border-purple-100 mb-4">
+                                <h4 class="font-bold text-purple-800 mb-2 text-lg">Verb to "be" فعل يكون:</h4>
+                                <div class="grid grid-cols-3 gap-2 text-center text-slate-700 en-text w-full mb-4 font-bold" dir="ltr">
+                                    <div class="bg-white p-2 rounded shadow-sm">I <span class="text-purple-600">am</span></div>
+                                    <div class="bg-white p-2 rounded shadow-sm">He, She, It <span class="text-purple-600">is</span></div>
+                                    <div class="bg-white p-2 rounded shadow-sm">We, You, They <span class="text-purple-600">are</span></div>
+                                </div>
+                                <ul class="list-disc list-inside space-y-2 en-text text-slate-700 w-full mb-4" dir="ltr">
+                                    <li class="cursor-pointer hover:text-purple-600" onclick="speak('I am a student.')">I'm a student.</li>
+                                    <li class="cursor-pointer hover:text-purple-600" onclick="speak('It is an eraser.')">It's an eraser.</li>
+                                    <li class="cursor-pointer hover:text-purple-600" onclick="speak('They are bags.')">They are bags.</li>
+                                    <li class="cursor-pointer hover:text-purple-600" onclick="speak('You are a teacher.')">You are a teacher.</li>
+                                </ul>
+                                
+                                <h4 class="font-bold text-purple-800 mb-2 text-lg border-t pt-2 border-purple-200">أدوات النكرة (a / an):</h4>
+                                <p class="text-slate-700">1- تستخدم <b>a</b> قبل الاسم المفرد النكرة الذي يبدأ بحرف ساكن: <span class="en-text">a board, a ruler, a window</span></p>
+                                <p class="text-slate-700">2- تستخدم <b>an</b> قبل الاسم المفرد النكرة الذي يبدأ بحرف متحرك (a, e, i, o, u): <span class="en-text">an eraser, an apple, an orange</span></p>
+                            </div>
+                        `,
+                        quiz: [
+                            { type: "mcq", q: "I ....... a student.", options: ["is", "are", "am", "be"], ans: 2 },
+                            { type: "mcq", q: "Choose: ..... eraser.", options: ["a", "an", "the", "two"], ans: 1 },
+                            { type: "translate", q: "سبورة", ans: "board" },
+                            { type: "mcq", q: "They ....... bags.", options: ["am", "is", "are", "a"], ans: 2 },
+                            { type: "reorder", q: "are / They / bags.", options: ["They", "are", "bags."], ans: "They are bags." }
+                        ]
+                    },
+                    {
+                        title: "Lesson 4",
+                        vocab: [
+                            { en: "pen", ar: "قلم جاف" }, { en: "ten", ar: "عشرة" },
+                            { en: "hen", ar: "دجاجة" }, { en: "zip", ar: "سوستة" },
+                            { en: "fig", ar: "تين" }, { en: "bin", ar: "سلة قمامة" }
+                        ],
+                        grammar: `
+                            <div class="bg-rose-50 p-4 rounded-xl border border-rose-100 mb-4">
+                                <h4 class="font-bold text-rose-800 mb-2 text-lg">سؤال وجواب (ما هذا / ما ذلك):</h4>
+                                <ul class="list-disc list-inside space-y-2 en-text text-slate-700 w-full" dir="ltr">
+                                    <li class="cursor-pointer hover:text-rose-600" onclick="speak('What is this? This is a bin.')">What's this? <i class="fa-solid fa-arrow-right mx-2"></i> This is a bin. <span class="text-slate-500 font-cairo text-sm block rtl">هذه تكون سلة قمامة</span></li>
+                                    <li class="cursor-pointer hover:text-rose-600" onclick="speak('What is that? That is a fig.')">What's that? <i class="fa-solid fa-arrow-right mx-2"></i> That is a fig. <span class="text-slate-500 font-cairo text-sm block rtl">ذلك يكون تين</span></li>
+                                    <li class="cursor-pointer hover:text-rose-600" onclick="speak('What is this? This is a pencil.')">What's this? <i class="fa-solid fa-arrow-right mx-2"></i> This is a pencil. <span class="text-slate-500 font-cairo text-sm block rtl">هذا يكون قلم رصاص</span></li>
+                                    <li class="cursor-pointer hover:text-rose-600" onclick="speak('What is that? That is a book.')">What's that? <i class="fa-solid fa-arrow-right mx-2"></i> That is a book. <span class="text-slate-500 font-cairo text-sm block rtl">ذلك يكون كتاب</span></li>
+                                </ul>
+                            </div>
+                        `,
+                        quiz: [
+                            { type: "mcq", q: "What's this? This is a .......", options: ["bin", "bins", "am", "are"], ans: 0 },
+                            { type: "translate", q: "دجاجة", ans: "hen" },
+                            { type: "mcq", q: "What's that? ....... is a book.", options: ["This", "That", "Am", "I"], ans: 1 },
+                            { type: "translate", q: "قلم جاف", ans: "pen" },
+                            { type: "reorder", q: "book / is / This / a", options: ["This", "is", "a", "book"], ans: "This is a book" }
+                        ]
+                    }
+                ]
+            },
+            2: {
+                title: "Unit 2: Colors, numbers & shapes",
+                lessons: [
+                    {
+                        title: "Lesson 1",
+                        vocab: [
+                            { en: "shapes", ar: "أشكال هندسية" }, { en: "colors", ar: "ألوان" },
+                            { en: "square", ar: "مربع" }, { en: "red", ar: "أحمر" },
+                            { en: "triangle", ar: "مثلث" }, { en: "green", ar: "أخضر" },
+                            { en: "star", ar: "نجمة" }, { en: "orange", ar: "برتقالي" },
+                            { en: "circle", ar: "دائرة" }, { en: "blue", ar: "أزرق" }
+                        ],
+                        grammar: `
+                            <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100 mb-4">
+                                <h4 class="font-bold text-indigo-800 mb-2 text-lg">الأسئلة الهامة والصفات:</h4>
+                                <ul class="list-disc list-inside space-y-2 en-text text-slate-700 w-full mb-4" dir="ltr">
+                                    <li class="cursor-pointer hover:text-indigo-600" onclick="speak('What color is this? It is red and blue.')">What color is this? <i class="fa-solid fa-arrow-right mx-2"></i> It's red and blue. <span class="text-slate-500 font-cairo text-sm block rtl">ما لون هذا؟ إنه أحمر وأزرق</span></li>
+                                    <li class="cursor-pointer hover:text-indigo-600" onclick="speak('What can you see? I can see a green triangle.')">What can you see? <i class="fa-solid fa-arrow-right mx-2"></i> I can see a green triangle. <span class="text-slate-500 font-cairo text-sm block rtl">ماذا ترى؟ أنا أرى مثلث أخضر</span></li>
+                                </ul>
+                                <p class="text-slate-700 font-bold bg-white p-2 rounded">ملاحظة هامة: اللون يأتي أولاً قبل الإسم!</p>
+                                <ul class="list-disc list-inside space-y-1 en-text text-slate-700 w-full mt-2" dir="ltr">
+                                    <li>blue square (مربع أزرق)</li>
+                                    <li>red circle (دائرة حمراء)</li>
+                                    <li>The red circle is on the desk.</li>
+                                    <li>This is a blue square.</li>
+                                </ul>
+                            </div>
+                        `,
+                        quiz: [
+                            { type: "mcq", q: "What ....... is this? It's red.", options: ["name", "color", "shape", "book"], ans: 1 },
+                            { type: "mcq", q: "I can see a ....... triangle.", options: ["green", "star", "circle", "is"], ans: 0 },
+                            { type: "translate", q: "مربع", ans: "square" },
+                            { type: "mcq", q: "The ....... is on the desk.", options: ["red circle", "circle red", "red", "circle"], ans: 0 },
+                            { type: "reorder", q: "square / a / blue / This / is", options: ["This", "is", "a", "blue", "square"], ans: "This is a blue square" }
+                        ]
+                    },
+                    {
+                        title: "Lesson 2",
+                        vocab: [
+                            { en: "dog", ar: "كلب" }, { en: "sun", ar: "شمس" },
+                            { en: "box", ar: "صندوق" }, { en: "bun", ar: "كعكة" },
+                            { en: "fox", ar: "ثعلب" }, { en: "cup", ar: "فنجان" }
+                        ],
+                        grammar: `
+                            <div class="bg-sky-50 p-4 rounded-xl border border-sky-100 mb-4">
+                                <h4 class="font-bold text-sky-800 mb-2 text-lg">أسئلة ماذا ترى / ماذا تحب:</h4>
+                                <ul class="list-disc list-inside space-y-2 en-text text-slate-700 w-full" dir="ltr">
+                                    <li class="cursor-pointer hover:text-sky-600" onclick="speak('What is this? This is a fox.')">What's this? <i class="fa-solid fa-arrow-right mx-2"></i> This is a fox.</li>
+                                    <li class="cursor-pointer hover:text-sky-600" onclick="speak('What can you see? I can see a white dog.')">What can you see? <i class="fa-solid fa-arrow-right mx-2"></i> I can see a white dog.</li>
+                                    <li class="cursor-pointer hover:text-sky-600" onclick="speak('What can you see? I can see a box.')">What can you see? <i class="fa-solid fa-arrow-right mx-2"></i> I can see a box.</li>
+                                    <li class="cursor-pointer hover:text-sky-600" onclick="speak('What do you like? I like a bun.')">What do you like? <i class="fa-solid fa-arrow-right mx-2"></i> I like a bun. <span class="text-slate-500 font-cairo text-sm block rtl">ماذا تحب؟ أنا أحب الكعكة</span></li>
+                                </ul>
+                            </div>
+                        `,
+                        quiz: [
+                            { type: "mcq", q: "What can you .......? I can see a box.", options: ["like", "see", "do", "is"], ans: 1 },
+                            { type: "translate", q: "ثعلب", ans: "fox" },
+                            { type: "mcq", q: "What ....... you like? I like a bun.", options: ["do", "does", "is", "are"], ans: 0 },
+                            { type: "translate", q: "فنجان", ans: "cup" },
+                            { type: "reorder", q: "dog / I / white / see / can / a", options: ["I", "can", "see", "a", "white", "dog"], ans: "I can see a white dog" }
+                        ]
+                    },
+                    {
+                        title: "Lesson 3",
+                        vocab: [
+                            { en: "one", ar: "1" }, { en: "two", ar: "2" },
+                            { en: "three", ar: "3" }, { en: "four", ar: "4" },
+                            { en: "five", ar: "5" }, { en: "six", ar: "6" },
+                            { en: "seven", ar: "7" }, { en: "eight", ar: "8" },
+                            { en: "nine", ar: "9" }, { en: "ten", ar: "10" },
+                            { en: "How many...?", ar: "كم عدد" }, { en: "there is...", ar: "يوجد" },
+                            { en: "I have...", ar: "أنا عندي" }, { en: "I like...", ar: "أنا أحب" }
+                        ],
+                        grammar: `
+                            <div class="bg-pink-50 p-4 rounded-xl border border-pink-100 mb-4">
+                                <h4 class="font-bold text-pink-800 mb-2 text-lg">السؤال عن العدد (How many):</h4>
+                                <p class="text-slate-700 bg-white p-2 rounded mb-3 font-bold">لاحظ: الاسم الذي يأتي بعد How many يجب أن يكون جمع!</p>
+                                <ul class="list-disc list-inside space-y-2 en-text text-slate-700 w-full" dir="ltr">
+                                    <li class="cursor-pointer hover:text-pink-600" onclick="speak('How many pencils are there? There are two pencils.')">How many pencils are there? <i class="fa-solid fa-arrow-right mx-2"></i> There are two pencils. <span class="text-slate-500 font-cairo text-sm block rtl">كم عدد الأقلام؟ يوجد قلمان</span></li>
+                                    <li class="cursor-pointer hover:text-pink-600" onclick="speak('How many notebooks are there? There are three notebooks.')">How many notebooks are there? <i class="fa-solid fa-arrow-right mx-2"></i> There are three notebooks.</li>
+                                    <li class="cursor-pointer hover:text-pink-600" onclick="speak('How many books are there?')">How many books are there?</li>
+                                </ul>
+                            </div>
+                        `,
+                        quiz: [
+                            { type: "mcq", q: "How many ....... are there?", options: ["book", "books", "a book", "is"], ans: 1 },
+                            { type: "mcq", q: "There ....... two pencils.", options: ["is", "am", "are", "be"], ans: 2 },
+                            { type: "translate", q: "ثلاثة", ans: "three" },
+                            { type: "mcq", q: "How ....... rulers are there?", options: ["much", "many", "old", "is"], ans: 1 },
+                            { type: "reorder", q: "many / How / are / books / there / ?", options: ["How", "many", "books", "are", "there", "?"], ans: "How many books are there ?" }
+                        ]
+                    },
+                    {
+                        title: "Lesson 4",
+                        vocab: [
+                            { en: "cake", ar: "كيك" }, { en: "cave", ar: "كهف" },
+                            { en: "lake", ar: "بحيرة" }, { en: "snake", ar: "ثعبان" },
+                            { en: "gate", ar: "بوابة" }, { en: "grapes", ar: "عنب" }
+                        ],
+                        grammar: `
+                            <div class="bg-teal-50 p-4 rounded-xl border border-teal-100 mb-4">
+                                <h4 class="font-bold text-teal-800 mb-2 text-lg">الجمع بإضافة (s):</h4>
+                                <p class="text-slate-700 bg-white p-2 rounded mb-3">لتحويل الاسم من المفرد إلى الجمع يضاف حرف (s) للإسم المفرد.</p>
+                                <div class="grid grid-cols-2 gap-4 text-center en-text w-full mb-4" dir="ltr">
+                                    <div class="bg-white p-2 rounded shadow-sm">One bag</div>
+                                    <div class="bg-white p-2 rounded shadow-sm">Three bag<b>s</b></div>
+                                </div>
+                                <ul class="list-disc list-inside space-y-2 en-text text-slate-700 w-full" dir="ltr">
+                                    <li class="cursor-pointer hover:text-teal-600" onclick="speak('There are three pens.')">There are three pens. <span class="text-slate-500 font-cairo text-sm block rtl">يوجد ثلاث أقلام</span></li>
+                                    <li class="cursor-pointer hover:text-teal-600" onclick="speak('There is one window.')">There is one window. <span class="text-slate-500 font-cairo text-sm block rtl">يوجد شباك واحد</span></li>
+                                    <li class="cursor-pointer hover:text-teal-600" onclick="speak('There are two snakes.')">There are two snakes. <span class="text-slate-500 font-cairo text-sm block rtl">يوجد ثعبانان</span></li>
+                                </ul>
+                            </div>
+                        `,
+                        quiz: [
+                            { type: "mcq", q: "There ....... one window.", options: ["is", "are", "am", "be"], ans: 0 },
+                            { type: "translate", q: "ثعبان", ans: "snake" },
+                            { type: "mcq", q: "There are two ........", options: ["snake", "snakes", "lake", "gate"], ans: 1 },
+                            { type: "translate", q: "عنب", ans: "grapes" },
+                            { type: "reorder", q: "are / pens / three / There", options: ["There", "are", "three", "pens"], ans: "There are three pens" }
+                        ]
+                    }
+                ]
+            },
+            3: {
+                title: "Unit 3: My classroom",
+                lessons: [
+                    {
+                        title: "Lesson 1",
+                        vocab: [
+                            { en: "read", ar: "يقرأ" }, { en: "color", ar: "يلون" },
+                            { en: "write", ar: "يكتب" }, { en: "play", ar: "يلعب" },
+                            { en: "draw", ar: "يرسم" }, { en: "sing", ar: "يغني" },
+                            { en: "clean", ar: "ينظف" }, { en: "open", ar: "يفتح" },
+                            { en: "sit", ar: "يجلس" }, { en: "close", ar: "يغلق" },
+                            { en: "stand", ar: "يقف" }, { en: "classroom", ar: "فصل دراسي" }
+                        ],
+                        grammar: `
+                            <div class="bg-violet-50 p-4 rounded-xl border border-violet-100 mb-4">
+                                <h4 class="font-bold text-violet-800 mb-2 text-lg">زمن المضارع المستمر (Present Continuous):</h4>
+                                <p class="text-slate-700 bg-white p-2 rounded mb-3">يعبر عن شيء يحدث الآن. يتكون من: <b>am / is / are + verb + ing</b></p>
+                                <ul class="list-disc list-inside space-y-2 en-text text-slate-700 w-full mb-4 font-bold" dir="ltr">
+                                    <li>I <i class="fa-solid fa-arrow-right mx-2 text-violet-400"></i> am + v + ing</li>
+                                    <li>He, She, It <i class="fa-solid fa-arrow-right mx-2 text-violet-400"></i> is + v + ing</li>
+                                    <li>We, You, They <i class="fa-solid fa-arrow-right mx-2 text-violet-400"></i> are + v + ing</li>
+                                </ul>
+                                <ul class="list-disc list-inside space-y-2 en-text text-slate-700 w-full" dir="ltr">
+                                    <li class="cursor-pointer hover:text-violet-600" onclick="speak('We are drawing pictures now.')">We are drawing pictures now. <span class="text-slate-500 font-cairo text-sm block rtl">نحن نرسم الصور الآن</span></li>
+                                    <li class="cursor-pointer hover:text-violet-600" onclick="speak('She is reading a book.')">She is reading a book. <span class="text-slate-500 font-cairo text-sm block rtl">هي تقرأ كتاب</span></li>
+                                    <li class="cursor-pointer hover:text-violet-600" onclick="speak('I am writing.')">I'm writing. <span class="text-slate-500 font-cairo text-sm block rtl">أنا أكتب</span></li>
+                                    <li class="cursor-pointer hover:text-violet-600" onclick="speak('He is playing with friends.')">He is playing with friends. <span class="text-slate-500 font-cairo text-sm block rtl">هو يلعب مع الأصدقاء</span></li>
+                                </ul>
+                            </div>
+                        `,
+                        quiz: [
+                            { type: "mcq", q: "She ....... reading a book.", options: ["am", "is", "are", "be"], ans: 1 },
+                            { type: "mcq", q: "We are ....... pictures now.", options: ["draw", "draws", "drawing", "drawn"], ans: 2 },
+                            { type: "translate", q: "يكتب", ans: "write" },
+                            { type: "mcq", q: "I ....... writing.", options: ["is", "are", "am", "be"], ans: 2 },
+                            { type: "reorder", q: "is / book / a / reading / She", options: ["She", "is", "reading", "a", "book"], ans: "She is reading a book" }
+                        ]
+                    },
+                    {
+                        title: "Lesson 2",
+                        vocab: [
+                            { en: "stand up", ar: "قف" }, { en: "sit down", ar: "إجلس" },
+                            { en: "open your book", ar: "إفتح كتابك" }, { en: "close your book", ar: "إغلق كتابك" },
+                            { en: "raise your hand", ar: "إرفع يدك" }, { en: "write your name", ar: "أكتب إسمك" },
+                            { en: "draw a circle", ar: "إرسم دائرة" }, { en: "clap", ar: "يصفق" }
+                        ],
+                        grammar: `
+                            <div class="bg-rose-50 p-4 rounded-xl border border-rose-100 mb-4">
+                                <h4 class="font-bold text-rose-800 mb-2 text-lg">أوامر الفصل وماذا تفعل:</h4>
+                                <ul class="list-disc list-inside space-y-2 en-text text-slate-700 w-full" dir="ltr">
+                                    <li class="cursor-pointer hover:text-rose-600" onclick="speak('What do you do in the classroom?')">What do you do in the classroom? <span class="text-slate-500 font-cairo text-sm block rtl">ماذا تفعل في الفصل؟</span></li>
+                                    <li class="cursor-pointer hover:text-rose-600" onclick="speak('I read.')">- I read. (أنا أقرأ)</li>
+                                    <li class="cursor-pointer hover:text-rose-600" onclick="speak('I write.')">- I write. (أنا أكتب)</li>
+                                    <li class="cursor-pointer hover:text-rose-600" onclick="speak('I draw.')">- I draw. (أنا أرسم)</li>
+                                </ul>
+                            </div>
+                        `,
+                        quiz: [
+                            { type: "mcq", q: "What ....... you do in the classroom?", options: ["is", "are", "do", "does"], ans: 2 },
+                            { type: "mcq", q: "....... your hand.", options: ["Raise", "Stand", "Sit", "Draw"], ans: 0 },
+                            { type: "translate", q: "قف", ans: "stand up" },
+                            { type: "mcq", q: "....... your book.", options: ["Clap", "Stand", "Open", "Sit"], ans: 2 },
+                            { type: "translate", q: "إجلس", ans: "sit down" }
+                        ]
+                    },
+                    {
+                        title: "Lesson 3 & 4",
+                        vocab: [
+                            { en: "read my book", ar: "أقرأ كتابي" }, { en: "draw a picture", ar: "أرسم صورة" },
+                            { en: "play with my friends", ar: "ألعب مع أصدقائي" }, { en: "clean my desk", ar: "أنظف مكتبي" },
+                            { en: "write in my notebook", ar: "أكتب في كراستي" }, { en: "sit on my chair", ar: "أجلس على الكرسي" }
+                        ],
+                        grammar: `
+                            <div class="bg-amber-50 p-4 rounded-xl border border-amber-100 mb-4">
+                                <h4 class="font-bold text-amber-800 mb-2 text-lg">قطعة القراءة المجمعة (Reading):</h4>
+                                <p class="en-text text-slate-700 text-lg leading-relaxed cursor-pointer hover:text-amber-600 bg-white p-4 rounded-xl shadow-sm" onclick="speak('Hello! In class, I sit on my chair. I read my book. I write in my notebook. I draw a picture. I play with my friends. I clean my desk.')" dir="ltr">
+                                    "Hello! In class, I sit on my chair. I read my book. I write in my notebook. I draw a picture. I play with my friends. I clean my desk."
+                                </p>
+                            </div>
+                        `,
+                        quiz: [
+                            { type: "mcq", q: "I read my .......", options: ["chair", "book", "desk", "picture"], ans: 1 },
+                            { type: "mcq", q: "I play with my .......", options: ["desk", "book", "friends", "notebook"], ans: 2 },
+                            { type: "mcq", q: "I write in my .......", options: ["chair", "book", "friends", "notebook"], ans: 3 },
+                            { type: "translate", q: "ينظف", ans: "clean" },
+                            { type: "reorder", q: "desk / clean / my / I", options: ["I", "clean", "my", "desk"], ans: "I clean my desk" }
+                        ]
+                    }
+                ]
+            },
+            4: {
+                title: "Unit 4: Everyday life",
+                lessons: [
+                    {
+                        title: "Lesson 1",
+                        vocab: [
+                            { en: "grandfather", ar: "جد" }, { en: "grandmother", ar: "جدة" },
+                            { en: "father", ar: "أب" }, { en: "mother", ar: "أم" },
+                            { en: "sister", ar: "أخت" }, { en: "family", ar: "عائلة" },
+                            { en: "who is this?", ar: "من هذا؟" }, { en: "he is...", ar: "هو يكون" },
+                            { en: "she is...", ar: "هي تكون" }, { en: "tall", ar: "طويل" },
+                            { en: "short", ar: "قصير" }
+                        ],
+                        grammar: `
+                            <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100 mb-4">
+                                <h4 class="font-bold text-indigo-800 mb-2 text-lg">السؤال بمن يكون للمفرد العاقل (Who):</h4>
+                                <ul class="list-disc list-inside space-y-2 en-text text-slate-700 w-full mb-4" dir="ltr">
+                                    <li class="cursor-pointer hover:text-indigo-600" onclick="speak('Who is this? This is my mother.')">Who is this? <i class="fa-solid fa-arrow-right mx-2"></i> This is my mother.</li>
+                                    <li class="cursor-pointer hover:text-indigo-600" onclick="speak('Who is this? This is my father.')">Who is this? <i class="fa-solid fa-arrow-right mx-2"></i> This is my father.</li>
+                                </ul>
+                                <h4 class="font-bold text-indigo-800 mb-2 text-lg border-t pt-2 border-indigo-200">صفات الملكية (my / your):</h4>
+                                <p class="text-slate-700 mb-2"><b>my</b>: ملكي <span class="en-text text-slate-500">(My bed = سريري)</span></p>
+                                <p class="text-slate-700 mb-2"><b>your</b>: ملكك <span class="en-text text-slate-500">(Your bed = سريرك)</span></p>
+                            </div>
+                        `,
+                        quiz: [
+                            { type: "mcq", q: "....... is this? This is my mother.", options: ["What", "Who", "Where", "How"], ans: 1 },
+                            { type: "translate", q: "عائلة", ans: "family" },
+                            { type: "mcq", q: "This is ....... father. (أبي)", options: ["your", "my", "he", "she"], ans: 1 },
+                            { type: "translate", q: "قصير", ans: "short" },
+                            { type: "reorder", q: "my / is / This / mother", options: ["This", "is", "my", "mother"], ans: "This is my mother" }
+                        ]
+                    },
+                    {
+                        title: "Lesson 2 & 3",
+                        vocab: [
+                            { en: "rose", ar: "وردة" }, { en: "nose", ar: "أنف" },
+                            { en: "cube", ar: "مكعب" }, { en: "glue", ar: "صمغ" },
+                            { en: "wake up", ar: "يستيقظ" }, { en: "eat", ar: "يأكل" },
+                            { en: "play", ar: "يلعب" }, { en: "brush", ar: "يغسل بالفرشاة" },
+                            { en: "read", ar: "يقرأ" }, { en: "wash", ar: "يغسل" },
+                            { en: "walk", ar: "يمشي" }
+                        ],
+                        grammar: `
+                            <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100 mb-4">
+                                <h4 class="font-bold text-emerald-800 mb-2 text-lg">المضارع البسيط (Present Simple) الجزء الأول:</h4>
+                                <p class="text-slate-700 bg-white p-2 rounded mb-3">يعبر عن عادة أو فعل متكرر. يتكون من مصدر الفعل إذا كان الفاعل جمع.</p>
+                                <ul class="list-disc list-inside space-y-2 en-text text-slate-700 w-full mb-4 font-bold" dir="ltr">
+                                    <li>I, We, You, They + <span class="text-emerald-500">verb (مصدر)</span></li>
+                                </ul>
+                                <ul class="list-disc list-inside space-y-2 en-text text-slate-700 w-full mb-4" dir="ltr">
+                                    <li class="cursor-pointer hover:text-emerald-600" onclick="speak('I wake up at 7 oclock.')">I wake up at 7 o'clock.</li>
+                                    <li class="cursor-pointer hover:text-emerald-600" onclick="speak('They eat breakfast in the morning.')">They eat breakfast in the morning.</li>
+                                    <li class="cursor-pointer hover:text-emerald-600" onclick="speak('What do you do in the morning? I eat my breakfast.')">What do you do in the morning? <i class="fa-solid fa-arrow-right mx-2"></i> I eat my breakfast.</li>
+                                </ul>
+                            </div>
+                        `,
+                        quiz: [
+                            { type: "mcq", q: "I ....... up at 7 o'clock.", options: ["wakes", "wake", "waking", "is wake"], ans: 1 },
+                            { type: "translate", q: "يستيقظ", ans: "wake up" },
+                            { type: "mcq", q: "They ....... breakfast in the morning.", options: ["eats", "eating", "eat", "are eat"], ans: 2 },
+                            { type: "translate", q: "صمغ", ans: "glue" },
+                            { type: "reorder", q: "at / wake / I / up / 7 o'clock", options: ["I", "wake", "up", "at", "7 o'clock"], ans: "I wake up at 7 o'clock" }
+                        ]
+                    },
+                    {
+                        title: "Lesson 4",
+                        vocab: [
+                            { en: "thin", ar: "نحيف" }, { en: "thick", ar: "سميك" },
+                            { en: "thumb", ar: "إصبع الإبهام" }, { en: "thunder", ar: "رعد" },
+                            { en: "math", ar: "حساب" }, { en: "teeth", ar: "أسنان" }
+                        ],
+                        grammar: `
+                            <div class="bg-rose-50 p-4 rounded-xl border border-rose-100 mb-4">
+                                <h4 class="font-bold text-rose-800 mb-2 text-lg">المضارع البسيط (Present Simple) الجزء الثاني:</h4>
+                                <p class="text-slate-700 bg-white p-2 rounded mb-3 font-bold text-red-600">تذكر: إذا كان الفاعل مفرد يضاف للفعل حرف s</p>
+                                <ul class="list-disc list-inside space-y-2 en-text text-slate-700 w-full mb-4 font-bold" dir="ltr">
+                                    <li>He, She, It + <span class="text-rose-500">verb + s</span></li>
+                                </ul>
+                                <ul class="list-disc list-inside space-y-2 en-text text-slate-700 w-full" dir="ltr">
+                                    <li class="cursor-pointer hover:text-rose-600" onclick="speak('She wakes up at 7 oclock.')">She wake<b>s</b> up at 7 o'clock.</li>
+                                    <li class="cursor-pointer hover:text-rose-600" onclick="speak('He eats breakfast in the morning.')">He eat<b>s</b> breakfast in the morning.</li>
+                                    <li class="cursor-pointer hover:text-rose-600" onclick="speak('Ahmed plays football after school.')">Ahmed play<b>s</b> football after school.</li>
+                                    <li class="cursor-pointer hover:text-rose-600" onclick="speak('Ahmed and leen play football after school.')">Ahmed and leen <span class="text-rose-500">play</span> football after school. (لأنهم جمع)</li>
+                                </ul>
+                            </div>
+                        `,
+                        quiz: [
+                            { type: "mcq", q: "She ....... up at 7 o'clock.", options: ["wake", "wakes", "waking", "is wake"], ans: 1 },
+                            { type: "mcq", q: "Ahmed ....... football.", options: ["plays", "play", "playing", "is play"], ans: 0 },
+                            { type: "translate", q: "أسنان", ans: "teeth" },
+                            { type: "mcq", q: "Ali and Sara ....... football. (جمع)", options: ["plays", "play", "playing", "are play"], ans: 1 },
+                            { type: "translate", q: "سميك", ans: "thick" }
+                        ]
+                    }
+                ]
+            },
+            5: {
+                title: "Unit 5 & 6: My home",
+                lessons: [
+                    {
+                        title: "Lesson 1 (Places & Prepositions)",
+                        vocab: [
+                            { en: "table", ar: "ترابيزة" }, { en: "bed", ar: "سرير" },
+                            { en: "door", ar: "باب" }, { en: "window", ar: "شباك" },
+                            { en: "lamp", ar: "لمبة" }, { en: "plate", ar: "طبق" },
+                            { en: "Where is...?", ar: "أين يكون" }, { en: "on", ar: "على" },
+                            { en: "in", ar: "في" }, { en: "under", ar: "تحت" },
+                            { en: "next to", ar: "بجوار" }
+                        ],
+                        grammar: `
+                            <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-4">
+                                <h4 class="font-bold text-blue-800 mb-2 text-lg">أين يوجد (Where is) وحروف الجر:</h4>
+                                <ul class="list-disc list-inside space-y-2 en-text text-slate-700 w-full" dir="ltr">
+                                    <li class="cursor-pointer hover:text-blue-600" onclick="speak('Where is the bed? The bed is in the bedroom.')">Where is the bed? <i class="fa-solid fa-arrow-right mx-2"></i> The bed is in the bedroom.</li>
+                                    <li class="cursor-pointer hover:text-blue-600" onclick="speak('Where is the chair? The chair is next to the table.')">Where is the chair? <i class="fa-solid fa-arrow-right mx-2"></i> The chair is next to the table.</li>
+                                    <li class="cursor-pointer hover:text-blue-600" onclick="speak('Where is the ball? The ball is under the table.')">Where is the ball? <i class="fa-solid fa-arrow-right mx-2"></i> The ball is under the table.</li>
+                                </ul>
+                            </div>
+                        `,
+                        quiz: [
+                            { type: "mcq", q: "....... is the bed? In the bedroom.", options: ["What", "Where", "Who", "How"], ans: 1 },
+                            { type: "mcq", q: "The chair is ....... to the table.", options: ["next", "on", "in", "under"], ans: 0 },
+                            { type: "translate", q: "تحت", ans: "under" },
+                            { type: "translate", q: "بجوار", ans: "next to" },
+                            { type: "reorder", q: "is / Where / bed / the / ?", options: ["Where", "is", "the", "bed", "?"], ans: "Where is the bed ?" }
+                        ]
+                    },
+                    {
+                        title: "Lesson 2 (Rooms)",
+                        vocab: [
+                            { en: "bedroom", ar: "غرفة النوم" }, { en: "bathroom", ar: "حمام" },
+                            { en: "living room", ar: "غرفة المعيشة" }, { en: "dining room", ar: "غرفة الطعام" },
+                            { en: "kitchen", ar: "مطبخ" }, { en: "garden", ar: "حديقة" },
+                            { en: "hall", ar: "صالة" }, { en: "balcony", ar: "بلكونة" }
+                        ],
+                        grammar: `
+                            <div class="bg-amber-50 p-4 rounded-xl border border-amber-100 mb-4">
+                                <h4 class="font-bold text-amber-800 mb-2 text-lg">أين تفعل الأشياء؟ (المضارع البسيط):</h4>
+                                <ul class="list-disc list-inside space-y-2 en-text text-slate-700 w-full" dir="ltr">
+                                    <li class="cursor-pointer hover:text-amber-600" onclick="speak('I eat in the kitchen.')">I eat in the kitchen.</li>
+                                    <li class="cursor-pointer hover:text-amber-600" onclick="speak('He eats in the kitchen.')">He eat<b>s</b> in the kitchen.</li>
+                                    <li class="cursor-pointer hover:text-amber-600" onclick="speak('Where do you sleep? I sleep in the bedroom.')">Where do you sleep? <i class="fa-solid fa-arrow-right mx-2"></i> I sleep in the bedroom.</li>
+                                    <li class="cursor-pointer hover:text-amber-600" onclick="speak('Where does mom cook? Mom cooks in the kitchen.')">Where does mom cook? <i class="fa-solid fa-arrow-right mx-2"></i> Mom cook<b>s</b> in the kitchen.</li>
+                                </ul>
+                            </div>
+                        `,
+                        quiz: [
+                            { type: "mcq", q: "I eat in the ........", options: ["bathroom", "bedroom", "kitchen", "balcony"], ans: 2 },
+                            { type: "mcq", q: "He ....... in the kitchen.", options: ["eat", "eats", "eating", "ate"], ans: 1 },
+                            { type: "translate", q: "غرفة النوم", ans: "bedroom" },
+                            { type: "mcq", q: "Mom ....... in the kitchen.", options: ["cook", "cooks", "cooking", "cooked"], ans: 1 },
+                            { type: "translate", q: "حديقة", ans: "garden" }
+                        ]
+                    },
+                    {
+                        title: "Lesson 3 & 4 (Phonics & Actions)",
+                        vocab: [
+                            { en: "cook", ar: "يطبخ" }, { en: "watch", ar: "يشاهد" },
+                            { en: "sleep", ar: "ينام" }, { en: "help", ar: "يساعد" },
+                            { en: "sheep", ar: "خروف" }, { en: "ship", ar: "سفينة" },
+                            { en: "shop", ar: "محل" }, { en: "fish", ar: "سمكة" },
+                            { en: "dish", ar: "طبق" }, { en: "brush", ar: "فرشاة أسنان" },
+                            { en: "cheese", ar: "جبنة" }, { en: "chicken", ar: "دجاجة" }
+                        ],
+                        grammar: `
+                            <div class="bg-violet-50 p-4 rounded-xl border border-violet-100 mb-4">
+                                <h4 class="font-bold text-violet-800 mb-2 text-lg">There is / There are (يوجد):</h4>
+                                <ul class="list-disc list-inside space-y-2 en-text text-slate-700 w-full mb-4 font-bold" dir="ltr">
+                                    <li>There is + (إسم مفرد)</li>
+                                    <li>There are + (إسم جمع)</li>
+                                </ul>
+                                <ul class="list-disc list-inside space-y-2 en-text text-slate-700 w-full mb-4" dir="ltr">
+                                    <li class="cursor-pointer hover:text-violet-600" onclick="speak('There is a kitchen in the house.')">There is a kitchen in the house.</li>
+                                    <li class="cursor-pointer hover:text-violet-600" onclick="speak('There are dishes in the kitchen.')">There are dishes in the kitchen.</li>
+                                </ul>
+                                <h4 class="font-bold text-violet-800 mb-2 text-lg border-t pt-2 border-violet-200">إضافة es للمضارع البسيط:</h4>
+                                <p class="text-slate-700 bg-white p-2 rounded mb-3">إذا كان الفعل ينتهي بحرف (ch, sh, o, x, s) والفاعل مفرد، يضاف له es</p>
+                                <ul class="list-disc list-inside space-y-2 en-text text-slate-700 w-full" dir="ltr">
+                                    <li class="cursor-pointer hover:text-violet-600" onclick="speak('Ahmed watches tv in the living room.')">Ahmed watch<b>es</b> tv.</li>
+                                    <li class="cursor-pointer hover:text-violet-600" onclick="speak('Leen brushes her teeth.')">Leen brush<b>es</b> her teeth.</li>
+                                </ul>
+                            </div>
+                        `,
+                        quiz: [
+                            { type: "mcq", q: "There ....... a bed in the bedroom.", options: ["is", "are", "am", "be"], ans: 0 },
+                            { type: "mcq", q: "There ....... chairs in the kitchen.", options: ["is", "are", "am", "be"], ans: 1 },
+                            { type: "translate", q: "سفينة", ans: "ship" },
+                            { type: "mcq", q: "Ahmed ....... TV in the living room.", options: ["watch", "watches", "watching", "watched"], ans: 1 },
+                            { type: "translate", q: "دجاجة", ans: "chicken" }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // --- 2. Application State ---
+        let currentUnit = 1;
+        let currentLessonIndex = 0;
+        let currentQuizScore = 0;
+        let synth = window.speechSynthesis;
+        let englishVoice = null;
+
+        // Initialize voices for text-to-speech
+        function initVoices() {
+            let voices = synth.getVoices();
+            englishVoice = voices.find(v => v.lang.startsWith('en-US') || v.lang.startsWith('en-GB')) || voices[0];
+        }
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = initVoices;
+        } else {
+            setTimeout(initVoices, 1000);
+        }
+
+        // --- 3. Core Functions ---
+        
+        function speak(text) {
+            if (synth.speaking) synth.cancel();
+            let utterThis = new SpeechSynthesisUtterance(text);
+            if (englishVoice) utterThis.voice = englishVoice;
+            utterThis.rate = 0.85; // slightly slower for kids
+            synth.speak(utterThis);
+        }
+
+        function initApp() {
+            renderUnitSelector();
+            selectUnit(1);
+            
+            // Show welcome modal on first load if not seen (using session storage to persist across reloads slightly)
+            if(!sessionStorage.getItem('welcomed')) {
+                document.getElementById('welcome-modal').classList.remove('hidden');
+                sessionStorage.setItem('welcomed', 'true');
+            }
+        }
+
+        function renderUnitSelector() {
+            const container = document.getElementById('unit-selector');
+            container.innerHTML = '';
+            
+            Object.keys(curriculumData).forEach(unitId => {
+                const btn = document.createElement('button');
+                btn.className = `px-6 py-3 rounded-xl font-bold transition-all border-2 ${currentUnit == unitId ? 'tab-active shadow-lg transform -translate-y-1' : 'bg-white text-slate-600 border-slate-200 hover:border-sky-300 hover:bg-sky-50'}`;
+                btn.innerText = `الوحدة ${unitId}`;
+                btn.onclick = () => selectUnit(unitId);
+                container.appendChild(btn);
+            });
+        }
+
+        function selectUnit(unitId) {
+            currentUnit = unitId;
+            currentLessonIndex = 0; // Reset to first lesson
+            renderUnitSelector(); // Update active state
+            
+            document.getElementById('display-unit-title').innerText = curriculumData[currentUnit].title;
+            
+            renderLessonSelector();
+            renderLessonContent();
+        }
+
+        function renderLessonSelector() {
+            const container = document.getElementById('lesson-selector');
+            container.innerHTML = '<h3 class="font-bold text-slate-700 mb-4 border-b pb-2"><i class="fa-solid fa-list-check text-emerald-500 ml-2"></i>دروس الوحدة:</h3>';
+            
+            const lessons = curriculumData[currentUnit].lessons;
+            
+            lessons.forEach((lesson, index) => {
+                const btn = document.createElement('button');
+                btn.className = `w-full text-right px-4 py-3 rounded-lg font-bold mb-2 transition-colors ${currentLessonIndex === index ? 'bg-sky-100 text-sky-700 border-r-4 border-sky-500' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'}`;
+                btn.innerText = lesson.title;
+                btn.onclick = () => {
+                    currentLessonIndex = index;
+                    renderLessonSelector(); // Update active state
+                    renderLessonContent();
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function renderLessonContent() {
+            const lesson = curriculumData[currentUnit].lessons[currentLessonIndex];
+            document.getElementById('display-lesson-title').innerText = lesson.title;
+            
+            // Render Vocab
+            const vocabContainer = document.getElementById('vocab-container');
+            vocabContainer.innerHTML = '';
+            lesson.vocab.forEach(word => {
+                const card = document.createElement('div');
+                card.className = 'bg-slate-50 hover:bg-sky-50 border border-slate-200 rounded-xl p-4 text-center cursor-pointer transition-all bounce-hover group shadow-sm hover:shadow-md';
+                card.onclick = () => speak(word.en);
+                card.innerHTML = `
+                    <div class="text-xl font-black text-slate-800 en-text mb-2 group-hover:text-sky-600">${word.en}</div>
+                    <div class="text-sm font-bold text-slate-500">${word.ar}</div>
+                    <i class="fa-solid fa-volume-high absolute top-2 right-2 text-slate-300 text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                `;
+                // To allow absolute positioning of icon
+                card.classList.add('relative'); 
+                vocabContainer.appendChild(card);
+            });
+
+            // Render Grammar
+            const grammarContainer = document.getElementById('grammar-container');
+            grammarContainer.innerHTML = lesson.grammar || '<p class="text-slate-500">لا توجد قواعد إضافية في هذا الدرس.</p>';
+            
+            // Clear writing input
+            document.querySelector('.writing-input').value = '';
+
+            // Render Quiz
+            renderQuiz();
+        }
+
+        // --- 4. Interactive Quiz Engine ---
+        function renderQuiz() {
+            const lesson = curriculumData[currentUnit].lessons[currentLessonIndex];
+            const container = document.getElementById('quiz-container');
+            
+            if(!lesson.quiz || lesson.quiz.length === 0) {
+                container.innerHTML = '<p class="text-slate-500 text-center font-bold">لا يوجد اختبار متاح لهذا الدرس حالياً.</p>';
+                return;
+            }
+
+            let html = '<div class="space-y-6">';
+            
+            lesson.quiz.forEach((q, index) => {
+                html += `<div class="bg-slate-50 p-5 rounded-xl border border-slate-200" id="q-block-${index}">`;
+                html += `<p class="font-bold text-lg text-slate-800 mb-3"><span class="bg-sky-100 text-sky-600 w-8 h-8 inline-flex items-center justify-center rounded-full mr-2">${index + 1}</span> <span class="${q.type === 'translate' ? '' : 'en-text'}" dir="${q.type === 'translate' ? 'rtl' : 'ltr'}">${q.q}</span></p>`;
+                
+                if (q.type === 'mcq') {
+                    html += `<div class="grid grid-cols-2 gap-3 en-text w-full" dir="ltr">`;
+                    q.options.forEach((opt, optIndex) => {
+                        html += `
+                            <label class="flex items-center gap-2 p-3 bg-white border rounded-lg cursor-pointer hover:bg-sky-50 transition-colors">
+                                <input type="radio" name="q${index}" value="${optIndex}" class="w-4 h-4 text-sky-600">
+                                <span class="font-semibold text-slate-700">${opt}</span>
+                            </label>
+                        `;
+                    });
+                    html += `</div>`;
+                } 
+                else if (q.type === 'translate' || q.type === 'reorder') {
+                    let placeholder = q.type === 'translate' ? 'Write the word in English...' : 'Write the correct sentence...';
+                    html += `
+                        <div class="flex gap-2" dir="ltr">
+                            <input type="text" id="q${index}-input" class="en-text w-full p-3 border rounded-lg focus:outline-none focus:border-sky-500 bg-white" placeholder="${placeholder}" autocomplete="off">
+                            <button onclick="speak(document.getElementById('q${index}-input').value)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 rounded-lg transition-colors" title="استمع لما كتبت"><i class="fa-solid fa-volume-high"></i></button>
+                        </div>
+                    `;
+                }
+                
+                html += `<div id="feedback-${index}" class="mt-2 text-sm font-bold hidden"></div>`;
+                html += `</div>`;
+            });
+            
+            html += `</div>`;
+            html += `
+                <div class="mt-8 text-center">
+                    <button onclick="checkQuiz()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold text-lg shadow-lg shadow-emerald-200 transition-transform transform hover:-translate-y-1">
+                        <i class="fa-solid fa-check-double ml-2"></i> تأكيد الإجابات
+                    </button>
+                    <div id="final-score" class="mt-4 text-2xl font-black hidden"></div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        function checkQuiz() {
+            const lesson = curriculumData[currentUnit].lessons[currentLessonIndex];
+            let score = 0;
+            
+            lesson.quiz.forEach((q, index) => {
+                let isCorrect = false;
+                const feedbackEl = document.getElementById(`feedback-${index}`);
+                const blockEl = document.getElementById(`q-block-${index}`);
+                
+                if (q.type === 'mcq') {
+                    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                    if (selected && parseInt(selected.value) === q.ans) {
+                        isCorrect = true;
+                    }
+                } 
+                else if (q.type === 'translate' || q.type === 'reorder') {
+                    const inputVal = document.getElementById(`q${index}-input`).value.trim().toLowerCase();
+                    const correctAns = q.ans.toLowerCase().replace(/[.?,]/g, '').trim(); // normalize string
+                    const userAnsNormalized = inputVal.replace(/[.?,]/g, '').trim();
+                    
+                    if (userAnsNormalized === correctAns) {
+                        isCorrect = true;
+                    }
+                }
+
+                feedbackEl.classList.remove('hidden');
+                blockEl.classList.remove('correct-anim', 'wrong-anim');
+                
+                // Trigger reflow to restart animation
+                void blockEl.offsetWidth; 
+
+                if (isCorrect) {
+                    score++;
+                    feedbackEl.innerHTML = '<i class="fa-solid fa-circle-check ml-1"></i> إجابة صحيحة!';
+                    feedbackEl.className = 'mt-2 text-sm font-bold text-emerald-600 block';
+                    blockEl.classList.add('border-emerald-300', 'bg-emerald-50', 'correct-anim');
+                } else {
+                    let corrAnswerText = q.type === 'mcq' ? q.options[q.ans] : q.ans;
+                    feedbackEl.innerHTML = `<i class="fa-solid fa-circle-xmark ml-1"></i> إجابة خاطئة. الإجابة الصحيحة هي: <span class="en-text mx-1">${corrAnswerText}</span>`;
+                    feedbackEl.className = 'mt-2 text-sm font-bold text-rose-600 block';
+                    blockEl.classList.add('border-rose-300', 'bg-rose-50', 'wrong-anim');
+                }
+            });
+
+            // Show final score
+            const finalScoreEl = document.getElementById('final-score');
+            finalScoreEl.classList.remove('hidden');
+            
+            if(score === lesson.quiz.length) {
+                finalScoreEl.innerHTML = `رائع يا بطل! درجتك <span class="text-emerald-500">${score}/${lesson.quiz.length}</span> <i class="fa-solid fa-trophy text-yellow-400"></i>`;
+                finalScoreEl.className = 'mt-6 text-2xl font-black block text-slate-800';
+            } else if (score >= lesson.quiz.length / 2) {
+                finalScoreEl.innerHTML = `جيد جداً! درجتك <span class="text-sky-500">${score}/${lesson.quiz.length}</span>. يمكنك المحاولة مرة أخرى لتحسينها.`;
+                finalScoreEl.className = 'mt-6 text-xl font-black block text-slate-800';
+            } else {
+                finalScoreEl.innerHTML = `لا بأس! درجتك <span class="text-rose-500">${score}/${lesson.quiz.length}</span>. راجع الدرس وحاول مرة أخرى.`;
+                finalScoreEl.className = 'mt-6 text-xl font-black block text-slate-800';
+            }
+        }
+
+        // Initialize everything when DOM is ready
+        window.addEventListener('DOMContentLoaded', initApp);
+
+    </script>
+</body>
+</html>
